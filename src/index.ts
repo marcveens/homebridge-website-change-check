@@ -66,7 +66,9 @@ class WebsiteChangeCheckPlatform implements DynamicPlatformPlugin {
      * It should be used to setup event handlers for characteristics and update respective values.
      */
     configureAccessory(accessory: PlatformAccessory): void {
-        console.log(`configureAccessory: ${accessory.displayName}, ${!this.accessoryRegisteredInConfig(accessory)}`);
+        if (this.config.verbose) {
+            this.log(`configureAccessory: ${accessory.displayName}, ${!this.accessoryRegisteredInConfig(accessory)}`);
+        }
         if (!this.accessoryRegisteredInConfig(accessory)) {
             this.accessoriesToRemove.push(accessory);
         } else {
@@ -78,12 +80,18 @@ class WebsiteChangeCheckPlatform implements DynamicPlatformPlugin {
 
     /** Initialize website check watcher */
     initializeWatchers() {
-        this.log(`Accessories total: ${this.accessories.length}`);
+        if (this.config.verbose) {
+            this.log(`Accessories total: ${this.accessories.length}`);
+        }
+
         for (let i = 0; i < this.accessories.length; i++) {
             const deviceConfig = this.config.changeChecks.find(c => c.name === this.accessories[i].displayName);
 
             if (deviceConfig) {
-                this.log(`initialize interval of ${deviceConfig.name} with interval of ${Math.max(5000, (deviceConfig?.checkInterval || 300000))}`);
+                if (this.config.verbose) {
+                    this.log(`initialize interval of ${deviceConfig.name} with interval of ${Math.max(5000, (deviceConfig?.checkInterval || 300000))}`);
+                }
+
                 this.checkStateIntervals.push(
                     setInterval(
                         this.updateAccessoryState.bind(this, this.accessories[i], deviceConfig),
@@ -96,13 +104,13 @@ class WebsiteChangeCheckPlatform implements DynamicPlatformPlugin {
 
     async updateAccessoryState(accessory: PlatformAccessory, config: ChangeCheck) {
         const service = accessory.getService(hap.Service.OccupancySensor);
-        const status = service?.getCharacteristic(hap.Characteristic.OccupancyDetected).value;
-        this.log(`Current status: ${status}, acc: ${config.name}`);
-
         const value = await this.getValueFromPage(config);
-        this.log('Value found: ', value);
+
+        if (this.config.verbose) {
+            this.log(`Value found: "${value}". Old value: "${this.lastValue[config.name]}". Value changed? ${this.lastValue[config.name] !== value}`);
+        }
+
         if (this.lastValue[config.name] !== value) {
-            this.log('New value!');
             this.lastValue[config.name] = value;
 
             service?.updateCharacteristic(hap.Characteristic.OccupancyDetected, hap.Characteristic.OccupancyDetected.OCCUPANCY_DETECTED);
@@ -111,7 +119,6 @@ class WebsiteChangeCheckPlatform implements DynamicPlatformPlugin {
                 service?.updateCharacteristic(hap.Characteristic.OccupancyDetected, hap.Characteristic.OccupancyDetected.OCCUPANCY_NOT_DETECTED);
             }, 1000);
         } else {
-            this.log('Value not new');
             service?.updateCharacteristic(hap.Characteristic.OccupancyDetected, hap.Characteristic.OccupancyDetected.OCCUPANCY_NOT_DETECTED);
         }
     }
@@ -128,7 +135,9 @@ class WebsiteChangeCheckPlatform implements DynamicPlatformPlugin {
 
     /** Remove outdated accessories from Homebridge */
     removeOutdatedAccessories() {
-        this.log(`Remove outdated accessories: ${this.accessoriesToRemove.map(a => a.displayName).join(', ')}`);
+        if (this.config.verbose) {
+            this.log(`Remove outdated accessories: ${this.accessoriesToRemove.map(a => a.displayName).join(', ')}`);
+        }
         this.api.unregisterPlatformAccessories(PLUGIN_NAME, PLATFORM_NAME, this.accessoriesToRemove);
     }
 
@@ -138,26 +147,29 @@ class WebsiteChangeCheckPlatform implements DynamicPlatformPlugin {
         accessoriesToRegister.forEach(acc => {
             const uuid = hap.uuid.generate(acc.name);
             const accessory = new Accessory(acc.name, uuid);
-            this.log(`addNewDevices: ${acc.name}`);
+
+            if (this.config.verbose) { this.log(`addNewDevices: ${acc.name}`); }
 
             accessory.addService(hap.Service.OccupancySensor, acc.name);
             this.api.registerPlatformAccessories(PLUGIN_NAME, PLATFORM_NAME, [accessory]);
+            this.accessories.push(accessory);
         });
     }
 
     // ----------------------------------------------------------------------
 
     async getValueFromPage(config: ChangeCheck) {
-        this.log('Initialize browser');
+        if (this.config.verbose) { this.log('Initialize browser'); }
         const browser = await puppeteer.launch({
             executablePath: '/usr/bin/chromium-browser',
             args: ['--no-sandbox', '--disable-setuid-sandbox']
         });
-        this.log('Browser initialized');
+
+        if (this.config.verbose) { this.log('Browser initialized'); }
         const page = await browser.newPage();
         await page.goto(config.url, { waitUntil: 'networkidle2' });
         await page.waitForSelector(config.selector);
-        this.log('Selector loaded');
+        if (this.config.verbose) { this.log('Selector loaded'); }
         const element = await page.$(config.selector);
         const text = await page.evaluate(element => { return element.textContent; }, element);
         await browser.close();

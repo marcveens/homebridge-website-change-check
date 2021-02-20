@@ -8,4 +8,5 @@ export type ChangeCheck = {
 
 export type Options = {
     changeChecks: ChangeCheck[];
+    verbose?: boolean;
 };

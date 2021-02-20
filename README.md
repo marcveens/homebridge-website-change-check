@@ -7,7 +7,7 @@
 
 </span>
 
-`homebridge-website-change-check` is a plugin for homebridge which allows you to check ...
+`homebridge-website-change-check` is a plugin for homebridge which allows you to check if a value on a website has changed. The special part of this plugin is that values are checked using a headless browser. Therefor values can even be fetched on websites with asynchronous data calls.
 
 ## Installation
 
@@ -24,9 +24,16 @@ Install homebridge-website-change-check:
 sudo npm install -g homebridge-website-change-check
 ```
 
+In the Homebridge terminal, run:
+```sh
+sudo apt install chromium-browser chromium-codecs-ffmpeg
+```
+
+This is necessary when running an ARM processor, like on a Raspberry Pi. 
+
 ## Configuration
 
-Add the `DeviceAlive` platform in `config.json` in your home directory inside `.homebridge`.
+Add the `WebsiteChangeCheck` platform in `config.json` in your home directory inside `.homebridge`.
 
 Example configuration:
 
@@ -34,16 +41,13 @@ Example configuration:
 {
   "platforms": [
     {
-        "platform": "DeviceAlive",
-        "checkInterval": 5000,
-        "devices": [
+        "platform": "WebsiteChangeCheck",
+        "changeChecks": [
             {
-                "name": "Soundbar",
-                "mac": "ff:ff:ff:ff:ff:ff"
-            },
-            {
-                "name": "Phone",
-                "ip": "192.168.172.10"
+                "name": "BBC check",
+                "url": "http://bbc.com/",
+                "selector": ".module--header .module__title span",
+                "checkInterval": 300000
             }
         ],
     }
@@ -55,17 +59,15 @@ Every device stated in the config will be automatically added as an accessory to
 
 #### Platform Configuration fields
 - `platform` [required]
-Should always be **"DeviceAlive"**.
-- `devices` [required]
-A list of your devices.
-#### Device Configuration fields
-Either mac or IP address is required.
+Should always be **"WebsiteChangeCheck"**.
+- `changeChecks` [required]
+A list of your website checks.
+#### changeChecks Configuration fields
 - `name` [required]
-Name of the device you want to add
-- `mac` [optional]
-Mac address of the device you want to check on your local network. Should be in lowerCase.
-- `ip` [optional]
-IP address of the device you want to check on your local network
-
-### Backstory
-This plugin is actually developed for use in Apple Shortcuts. I had a problem where I wanted to use a IR blaster to turn on and off some devices, but only had 1 signal for both statuses. I could not check if the device was already turned off when I ran a shortcut, thus the device would turn on again. This plugin can make sure no signal is sent if the device is already turned off.  
+Custom name for your check
+- `url` [required]
+URL of the website/page you want to check
+- `selector` [required]
+Selector of the value you want to compare. 
+- `checkInterval` [optional]
+Interval of the checks
