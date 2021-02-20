@@ -144,7 +144,10 @@ class WebsiteChangeCheckPlatform implements DynamicPlatformPlugin {
     // ----------------------------------------------------------------------
 
     async getValueFromPage(config: ChangeCheck) {
-        const browser = await puppeteer.launch(/*{headless: false}*/);
+        const browser = await puppeteer.launch({
+            executablePath: '/usr/bin/chromium-browser',
+            args: ['--no-sandbox', '--disable-setuid-sandbox']
+        });
         const page = await browser.newPage();
         await page.goto(config.url, { waitUntil: 'networkidle2' });
         await page.waitForSelector(config.selector);
