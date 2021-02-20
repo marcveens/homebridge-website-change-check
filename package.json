@@ -1,7 +1,7 @@
 {
   "name": "homebridge-website-change-check",
   "displayName": "Website Change Check",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Homebridge plugin for checking if a device is online or not. Works by IP and Mac address.",
   "main": "dist/index.js",
   "scripts": {
@@ -11,6 +11,12 @@
     "postpublish": "npm run clean",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "funding": [
+    {
+      "type": "paypal",
+      "url": "https://paypal.me/marcveens"
+    }
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/marcveens/homebridge-website-change-check.git"
