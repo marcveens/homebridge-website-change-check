@@ -1,13 +1,13 @@
 <span align="center">
 
-# homebridge-device-alive
+# homebridge-website-change-check
 
-[![homebridge-device-alive](https://badgen.net/npm/v/homebridge-device-alive?icon=npm)](https://www.npmjs.com/package/homebridge-device-alive)
-[![mit-license](https://badgen.net/npm/license/homebridge-device-alive)](https://github.com/marcveens/homebridge-device-alive/blob/master/LICENSE)
+[![homebridge-website-change-check](https://badgen.net/npm/v/homebridge-website-change-check?icon=npm)](https://www.npmjs.com/package/homebridge-website-change-check)
+[![mit-license](https://badgen.net/npm/license/homebridge-website-change-check)](https://github.com/marcveens/homebridge-website-change-check/blob/master/LICENSE)
 
 </span>
 
-`homebridge-device-alive` is a plugin for homebridge which allows you to check if a device is online in your network. It support both IP addresses and Mac addresses. It uses a Homebridge Occupancy Sensor accessory to indicate if a device is available on the local network. 
+`homebridge-website-change-check` is a plugin for homebridge which allows you to check ...
 
 ## Installation
 
@@ -19,9 +19,9 @@ Install homebridge:
 sudo npm install -g homebridge
 ```
 
-Install homebridge-device-alive:
+Install homebridge-website-change-check:
 ```sh
-sudo npm install -g homebridge-device-alive
+sudo npm install -g homebridge-website-change-check
 ```
 
 ## Configuration

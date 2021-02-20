@@ -1,10 +1,11 @@
-type Device = {
+export type ChangeCheck = {
     name: string;
-    ip?: string;
-    mac?: string;
+    url: string;
+    selector: string;
+    ignoreText?: string;
+    checkInterval?: number;
 };
 
 export type Options = {
-    devices: Device[];
-    checkInterval?: number;
+    changeChecks: ChangeCheck[];
 };

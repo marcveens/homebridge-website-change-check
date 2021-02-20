@@ -7,13 +7,13 @@ import {
     PlatformAccessory,
     PlatformConfig
 } from "homebridge";
-import findDevices from 'local-devices';
-import { Options } from './optionTypes';
+import * as puppeteer from 'puppeteer';
+import { ChangeCheck, Options } from './optionTypes';
 
 type CustomPlatformConfig = PlatformConfig & Options;
 
-const PLUGIN_NAME = "homebridge-device-alive";
-const PLATFORM_NAME = "DeviceAlive";
+const PLUGIN_NAME = "homebridge-website-change-check";
+const PLATFORM_NAME = "WebsiteChangeCheck";
 
 let hap: HAP;
 let Accessory: typeof PlatformAccessory;
@@ -22,16 +22,16 @@ export = (api: API) => {
     hap = api.hap;
     Accessory = api.platformAccessory;
 
-    api.registerPlatform(PLUGIN_NAME, PLATFORM_NAME, ExampleDynamicPlatform);
+    api.registerPlatform(PLUGIN_NAME, PLATFORM_NAME, WebsiteChangeCheckPlatform);
 };
 
-class ExampleDynamicPlatform implements DynamicPlatformPlugin {
+class WebsiteChangeCheckPlatform implements DynamicPlatformPlugin {
 
     private readonly log: Logging;
     private readonly api: API;
     private readonly config: CustomPlatformConfig;
-    private checkStateInterval?: NodeJS.Timeout;
-    private checkStateIntervalTime: number;
+    private checkStateIntervals: NodeJS.Timeout[] = [];
+    private lastValue: { [key: string]: string } = {};
 
     private readonly accessories: PlatformAccessory[] = [];
     private readonly accessoriesToRemove: PlatformAccessory[] = [];
@@ -40,7 +40,6 @@ class ExampleDynamicPlatform implements DynamicPlatformPlugin {
         this.log = log;
         this.api = api;
         this.config = defaultConfig as CustomPlatformConfig;
-        this.checkStateIntervalTime = this.config.checkInterval || 5000;
 
         /*
          * When this event is fired, homebridge restored all cached accessories from disk and did call their respective
@@ -52,12 +51,12 @@ class ExampleDynamicPlatform implements DynamicPlatformPlugin {
             this.addNewDevices();
             this.removeOutdatedAccessories();
 
-            this.checkStateInterval = this.initializeWatcher();
+            this.initializeWatchers();
         });
 
         api.on(APIEvent.SHUTDOWN, () => {
-            if (this.checkStateInterval) {
-                clearInterval(this.checkStateInterval);
+            for (let i = 0; i < this.checkStateIntervals.length; i++) {
+                clearInterval(this.checkStateIntervals[i]);
             }
         });
     }
@@ -76,54 +75,52 @@ class ExampleDynamicPlatform implements DynamicPlatformPlugin {
 
     // --------------------------- CUSTOM METHODS ---------------------------
 
-    /** Initialize watcher which checks if a device is online or not */
-    initializeWatcher() {
-        return setInterval(
-            this.updateAccessoryState.bind(this),
-            this.checkStateIntervalTime
-        );
+    /** Initialize website check watcher */
+    initializeWatchers() {
+        for (let i = 0; i < this.accessories.length; i++) {
+            const deviceConfig = this.config.changeChecks.find(c => c.name === this.accessories[i].displayName);
+
+            if (deviceConfig) {
+                this.checkStateIntervals.push(
+                    setInterval(
+                        this.updateAccessoryState.bind(this, this.accessories[i], deviceConfig),
+                        deviceConfig?.checkInterval || 300000 // 5 minutes
+                    )
+                );
+            }
+        }
     }
 
-    /** Check if devices are online or not */
-    updateAccessoryState() {
-        findDevices().then(devices => {
-            for (let i = 0; i < this.accessories.length; i++) {
-                const deviceConfig = this.config.devices.find(d => d.name === this.accessories[i].displayName);
-                const service = this.accessories[i].getService(hap.Service.OccupancySensor);
-                const status = service?.getCharacteristic(hap.Characteristic.OccupancyDetected).value;
-                const deviceIsOnline = devices.find(d => {
-                    if (deviceConfig) {
-                        return d.ip === deviceConfig.ip || this.fixMac(d.mac) === this.fixMac(deviceConfig.mac);
-                    }
+    async updateAccessoryState(accessory: PlatformAccessory, config: ChangeCheck) {
+        const service = accessory.getService(hap.Service.OccupancySensor);
+        const status = service?.getCharacteristic(hap.Characteristic.OccupancyDetected).value;
+        this.log('Current status: ', status);
 
-                    return false;
-                });
+        const value = await this.getValueFromPage(config);
+        this.log('Value found: ', value);
+        if (this.lastValue[config.name] !== value) {
+            this.log('New value!');
+            this.lastValue[config.name] = value;
 
-                if (!!deviceIsOnline) {
-                    // Only turn on if it's not already on
-                    if (!status) {
-                        this.log(`${deviceConfig?.name} is now online`);
-                        service?.updateCharacteristic(hap.Characteristic.OccupancyDetected, hap.Characteristic.OccupancyDetected.OCCUPANCY_DETECTED);
-                    }
-                } else {
-                    // Only turn off if it's not already off 
-                    if (!!status) {
-                        this.log(`${deviceConfig?.name} is now offline`);
-                        service?.updateCharacteristic(hap.Characteristic.OccupancyDetected, hap.Characteristic.OccupancyDetected.OCCUPANCY_NOT_DETECTED);
-                    }
-                }
-            }
-        });
+            service?.updateCharacteristic(hap.Characteristic.OccupancyDetected, hap.Characteristic.OccupancyDetected.OCCUPANCY_DETECTED);
+
+            setTimeout(() => {
+                service?.updateCharacteristic(hap.Characteristic.OccupancyDetected, hap.Characteristic.OccupancyDetected.OCCUPANCY_NOT_DETECTED);
+            }, 1000);
+        } else {
+            this.log('Value not new');
+            service?.updateCharacteristic(hap.Characteristic.OccupancyDetected, hap.Characteristic.OccupancyDetected.OCCUPANCY_NOT_DETECTED);
+        }
     }
 
     /** Check if accessory is registered in the Homebridge config */
     accessoryRegisteredInConfig(accessory: PlatformAccessory) {
-        return this.config.devices.find(d => d.name === accessory.displayName);
+        return this.config.changeChecks.find(d => d.name === accessory.displayName);
     }
 
     /** Check if accessory is registered in the Homebridge config */
     accessoryMissingInHomebridge(accessory: PlatformAccessory) {
-        return this.config.devices.find(d => d.name === accessory.displayName);
+        return this.config.changeChecks.find(d => d.name === accessory.displayName);
     }
 
     /** Remove outdated accessories from Homebridge */
@@ -133,7 +130,7 @@ class ExampleDynamicPlatform implements DynamicPlatformPlugin {
 
     /** Register unregistered devices to Homebridge */
     addNewDevices() {
-        const accessoriesToRegister = this.config.devices.filter(d => !this.accessories.find(a => a.displayName === d.name));
+        const accessoriesToRegister = this.config.changeChecks.filter(d => !this.accessories.find(a => a.displayName === d.name));
 
         accessoriesToRegister.forEach(acc => {
             const uuid = hap.uuid.generate(acc.name);
@@ -144,11 +141,17 @@ class ExampleDynamicPlatform implements DynamicPlatformPlugin {
         });
     }
 
-    /** Because different sources use different characters for mac addresses. Now always use colon */
-    fixMac(address?: string) {
-        return (address || '').replace(/-/g, ':').replace(/\./g, ':').toLowerCase();
-    }
-
     // ----------------------------------------------------------------------
 
+    async getValueFromPage(config: ChangeCheck) {
+        const browser = await puppeteer.launch(/*{headless: false}*/);
+        const page = await browser.newPage();
+        await page.goto(config.url, { waitUntil: 'networkidle2' });
+        await page.waitForSelector(config.selector);
+        const element = await page.$(config.selector);
+        const text = await page.evaluate(element => { return element.textContent; }, element);
+        await browser.close();
+
+        return text;
+    }
 }

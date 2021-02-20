@@ -1,22 +1,15 @@
 {
-    "pluginAlias": "DeviceAlive",
+    "pluginAlias": "WebsiteChangeCheck",
     "pluginType": "platform",
     "singular": true,
-    "headerDisplay": "Homebridge plugin for checking if a device is online or not. Works by IP and Mac address.",
-    "footerDisplay": "For a detailed description, see the [README](https://github.com/marcveens/homebridge-device-alive)",
+    "headerDisplay": "Homebridge plugin for checking if a value on a website changes",
+    "footerDisplay": "For a detailed description, see the [README](https://github.com/marcveens/homebridge-website-change-check)",
     "schema": {
         "type": "object",
         "properties": {
-            "checkInterval": {
-                "title": "Polling interval",
-                "description": "How often to check the status of the device in milliseconds.",
-                "type": "number",
-                "default": 5000,
-                "required": false
-            },
-            "devices": {
-                "title": "Devices",
-                "description": "Devices that need to be checked if they're online or not. Either by IP or Mac address.",
+            "changeChecks": {
+                "title": "ChangeChecks",
+                "description": "Websites and selectors that need to be checked on a certain interval",
                 "type": "array",
                 "required": true,
                 "items": {
@@ -27,15 +20,23 @@
                             "type": "string",
                             "required": true
                         },
-                        "ip": {
-                            "title": "ip",
-                            "description": "For example: 192.168.172.10",
+                        "url": {
+                            "title": "url",
+                            "description": "For example: https://www.bbc.com",
+                            "type": "string",
+                            "required": true
+                        },
+                        "selector": {
+                            "title": "selector",
+                            "description": "For example: \".module--header .module__title\"",
                             "type": "string"
                         },
-                        "mac": {
-                            "title": "mac",
-                            "description": "For example: FF:FF:FF:FF:FF:FF",
-                            "type": "string"
+                        "checkInterval": {
+                            "title": "Polling interval",
+                            "description": "How often to check the website change in milliseconds.",
+                            "type": "number",
+                            "default": 300000,
+                            "required": false
                         }
                     }
                 }

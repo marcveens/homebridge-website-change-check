@@ -1,7 +1,7 @@
 {
   "name": "homebridge-website-change-check",
-  "displayName": "Change Check",
-  "version": "1.0.4",
+  "displayName": "Website Change Check",
+  "version": "0.0.1",
   "description": "Homebridge plugin for checking if a device is online or not. Works by IP and Mac address.",
   "main": "dist/index.js",
   "scripts": {
@@ -34,6 +34,6 @@
     "typescript": "^4.0.2"
   },
   "dependencies": {
-    "local-devices": "^3.0.0"
+    "puppeteer": "^7.1.0"
   }
 }
