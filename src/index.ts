@@ -7,7 +7,7 @@ import {
     PlatformAccessory,
     PlatformConfig
 } from "homebridge";
-import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer-core';
 import { ChangeCheck, Options } from './optionTypes';
 
 type CustomPlatformConfig = PlatformConfig & Options;
