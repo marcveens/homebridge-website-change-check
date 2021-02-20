@@ -77,7 +77,7 @@ class WebsiteChangeCheckPlatform implements DynamicPlatformPlugin {
 
     /** Initialize website check watcher */
     initializeWatchers() {
-        console.log(JSON.stringify(this.accessories));
+        this.log(JSON.stringify(this.accessories));
         for (let i = 0; i < this.accessories.length; i++) {
             const deviceConfig = this.config.changeChecks.find(c => c.name === this.accessories[i].displayName);
 
