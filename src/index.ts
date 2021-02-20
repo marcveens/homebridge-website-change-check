@@ -106,9 +106,7 @@ class WebsiteChangeCheckPlatform implements DynamicPlatformPlugin {
         const service = accessory.getService(hap.Service.OccupancySensor);
         const value = await this.getValueFromPage(config);
 
-        if (this.config.verbose) {
-            this.log(`Value found: "${value}". Old value: "${this.lastValue[config.name]}". Value changed? ${this.lastValue[config.name] !== value}`);
-        }
+        this.log(`(${config.name}) Value found: "${value}". Old value: "${this.lastValue[config.name]}". Value changed? ${this.lastValue[config.name] !== value}`);
 
         if (this.lastValue[config.name] !== value) {
             // Only send update if lastValue is already known
