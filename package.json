@@ -1,7 +1,7 @@
 {
   "name": "homebridge-website-change-check",
   "displayName": "Website Change Check",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Homebridge plugin for checking if a device is online or not. Works by IP and Mac address.",
   "main": "dist/index.js",
   "scripts": {

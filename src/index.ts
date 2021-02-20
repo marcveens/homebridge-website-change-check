@@ -66,6 +66,7 @@ class WebsiteChangeCheckPlatform implements DynamicPlatformPlugin {
      * It should be used to setup event handlers for characteristics and update respective values.
      */
     configureAccessory(accessory: PlatformAccessory): void {
+        console.log(`configureAccessory: ${accessory.displayName}, ${!this.accessoryRegisteredInConfig(accessory)}`);
         if (!this.accessoryRegisteredInConfig(accessory)) {
             this.accessoriesToRemove.push(accessory);
         } else {
@@ -127,6 +128,7 @@ class WebsiteChangeCheckPlatform implements DynamicPlatformPlugin {
 
     /** Remove outdated accessories from Homebridge */
     removeOutdatedAccessories() {
+        this.log(`Remove outdated accessories: ${this.accessoriesToRemove.map(a => a.displayName).join(', ')}`);
         this.api.unregisterPlatformAccessories(PLUGIN_NAME, PLATFORM_NAME, this.accessoriesToRemove);
     }
 
@@ -136,6 +138,7 @@ class WebsiteChangeCheckPlatform implements DynamicPlatformPlugin {
         accessoriesToRegister.forEach(acc => {
             const uuid = hap.uuid.generate(acc.name);
             const accessory = new Accessory(acc.name, uuid);
+            this.log(`addNewDevices: ${acc.name}`);
 
             accessory.addService(hap.Service.OccupancySensor, acc.name);
             this.api.registerPlatformAccessories(PLUGIN_NAME, PLATFORM_NAME, [accessory]);
