@@ -110,7 +110,7 @@ class WebsiteChangeCheckPlatform implements DynamicPlatformPlugin {
             this.log(`Value found: "${value}". Old value: "${this.lastValue[config.name]}". Value changed? ${this.lastValue[config.name] !== value}`);
         }
 
-        if (this.lastValue[config.name] !== value) {
+        if (this.lastValue[config.name] && this.lastValue[config.name] !== value) {
             this.lastValue[config.name] = value;
 
             service?.updateCharacteristic(hap.Characteristic.OccupancyDetected, hap.Characteristic.OccupancyDetected.OCCUPANCY_DETECTED);
