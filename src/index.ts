@@ -110,14 +110,17 @@ class WebsiteChangeCheckPlatform implements DynamicPlatformPlugin {
             this.log(`Value found: "${value}". Old value: "${this.lastValue[config.name]}". Value changed? ${this.lastValue[config.name] !== value}`);
         }
 
-        if (this.lastValue[config.name] && this.lastValue[config.name] !== value) {
+        if (this.lastValue[config.name] !== value) {
+            // Only send update if lastValue is already known
+            if (this.lastValue[config.name]) {
+                service?.updateCharacteristic(hap.Characteristic.OccupancyDetected, hap.Characteristic.OccupancyDetected.OCCUPANCY_DETECTED);
+
+                setTimeout(() => {
+                    service?.updateCharacteristic(hap.Characteristic.OccupancyDetected, hap.Characteristic.OccupancyDetected.OCCUPANCY_NOT_DETECTED);
+                }, 1000);
+            }
+
             this.lastValue[config.name] = value;
-
-            service?.updateCharacteristic(hap.Characteristic.OccupancyDetected, hap.Characteristic.OccupancyDetected.OCCUPANCY_DETECTED);
-
-            setTimeout(() => {
-                service?.updateCharacteristic(hap.Characteristic.OccupancyDetected, hap.Characteristic.OccupancyDetected.OCCUPANCY_NOT_DETECTED);
-            }, 1000);
         } else {
             service?.updateCharacteristic(hap.Characteristic.OccupancyDetected, hap.Characteristic.OccupancyDetected.OCCUPANCY_NOT_DETECTED);
         }
