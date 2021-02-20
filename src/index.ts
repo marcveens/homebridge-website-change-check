@@ -77,14 +77,16 @@ class WebsiteChangeCheckPlatform implements DynamicPlatformPlugin {
 
     /** Initialize website check watcher */
     initializeWatchers() {
+        console.log(JSON.stringify(this.accessories));
         for (let i = 0; i < this.accessories.length; i++) {
             const deviceConfig = this.config.changeChecks.find(c => c.name === this.accessories[i].displayName);
 
             if (deviceConfig) {
+                this.log(`initialize interval of ${deviceConfig.name} with interval of ${Math.max(5000, (deviceConfig?.checkInterval || 300000))}`);
                 this.checkStateIntervals.push(
                     setInterval(
                         this.updateAccessoryState.bind(this, this.accessories[i], deviceConfig),
-                        deviceConfig?.checkInterval || 300000 // 5 minutes
+                        Math.max(5000, (deviceConfig?.checkInterval || 300000)) // default of 5 minutes with a minimum of 5 seconds
                     )
                 );
             }
@@ -94,7 +96,7 @@ class WebsiteChangeCheckPlatform implements DynamicPlatformPlugin {
     async updateAccessoryState(accessory: PlatformAccessory, config: ChangeCheck) {
         const service = accessory.getService(hap.Service.OccupancySensor);
         const status = service?.getCharacteristic(hap.Characteristic.OccupancyDetected).value;
-        this.log('Current status: ', status);
+        this.log(`Current status: ${status}, acc: ${config.name}`);
 
         const value = await this.getValueFromPage(config);
         this.log('Value found: ', value);
@@ -131,7 +133,6 @@ class WebsiteChangeCheckPlatform implements DynamicPlatformPlugin {
     /** Register unregistered devices to Homebridge */
     addNewDevices() {
         const accessoriesToRegister = this.config.changeChecks.filter(d => !this.accessories.find(a => a.displayName === d.name));
-
         accessoriesToRegister.forEach(acc => {
             const uuid = hap.uuid.generate(acc.name);
             const accessory = new Accessory(acc.name, uuid);
