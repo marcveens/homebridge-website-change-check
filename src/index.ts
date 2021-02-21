@@ -114,6 +114,8 @@ class WebsiteChangeCheckPlatform implements DynamicPlatformPlugin {
         this.log(`(${changeCheck.name}) Value found: "${value}". Old value: "${this.cache.getValue(changeCheck.name)}". Value changed? ${this.cache.getValue(changeCheck.name) !== value}`);
 
         if (this.cache.getValue(changeCheck.name) !== value) {
+            this.cache.setValue(changeCheck.name, value);
+
             // Only send update if a value changed more than once. This prevents detection from firing on first run. 
             if (this.cache.hasValueChangedMoreThanOnce(changeCheck.name)) {
                 service?.updateCharacteristic(hap.Characteristic.MotionDetected, true);
@@ -123,8 +125,6 @@ class WebsiteChangeCheckPlatform implements DynamicPlatformPlugin {
                     service?.updateCharacteristic(hap.Characteristic.MotionDetected, false);
                 }, 1000);
             }
-
-            this.cache.setValue(changeCheck.name, value);
         } else {
             service?.updateCharacteristic(hap.Characteristic.MotionDetected, false);
         }
