@@ -1,8 +1,8 @@
 {
   "name": "homebridge-website-change-check",
   "displayName": "Website Change Check",
-  "version": "1.0.2-beta.2",
-  "description": "Homebridge plugin for checking if a device is online or not. Works by IP and Mac address.",
+  "version": "1.0.2",
+  "description": "Homebridge plugin for checking if a value on a website has changed.",
   "main": "dist/index.js",
   "scripts": {
     "clean": "rimraf ./dist",
@@ -31,7 +31,9 @@
     "url": "https://github.com/marcveens/homebridge-website-change-check/issues"
   },
   "keywords": [
-    "homebridge-plugin"
+    "homebridge-plugin",
+    "website-change-check",
+    "change-updates"
   ],
   "homepage": "https://github.com/marcveens/homebridge-website-change-check#readme",
   "devDependencies": {
