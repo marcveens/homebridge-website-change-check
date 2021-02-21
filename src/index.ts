@@ -6,14 +6,15 @@ import {
     Logging,
     PlatformAccessory,
     PlatformConfig
-} from "homebridge";
-import puppeteer from 'puppeteer-core';
-import { ChangeCheck, Options } from './optionTypes';
+} from 'homebridge';
+import { ChangeCheck, Options } from './types/optionTypes';
+import { getValueFromPage } from './selectorValueChecker';
+import { Cache } from './Cache';
 
 type CustomPlatformConfig = PlatformConfig & Options;
 
-const PLUGIN_NAME = "homebridge-website-change-check";
-const PLATFORM_NAME = "WebsiteChangeCheck";
+const PLUGIN_NAME = 'homebridge-website-change-check';
+const PLATFORM_NAME = 'WebsiteChangeCheck';
 
 let hap: HAP;
 let Accessory: typeof PlatformAccessory;
@@ -31,7 +32,7 @@ class WebsiteChangeCheckPlatform implements DynamicPlatformPlugin {
     private readonly api: API;
     private readonly config: CustomPlatformConfig;
     private checkStateIntervals: NodeJS.Timeout[] = [];
-    private lastValue: { [key: string]: string } = {};
+    private cache = new Cache();
 
     private readonly accessories: PlatformAccessory[] = [];
     private readonly accessoriesToRemove: PlatformAccessory[] = [];
@@ -102,25 +103,30 @@ class WebsiteChangeCheckPlatform implements DynamicPlatformPlugin {
         }
     }
 
-    async updateAccessoryState(accessory: PlatformAccessory, config: ChangeCheck) {
-        const service = accessory.getService(hap.Service.OccupancySensor);
-        const value = await this.getValueFromPage(config);
+    async updateAccessoryState(accessory: PlatformAccessory, changeCheck: ChangeCheck) {
+        const service = accessory.getService(hap.Service.MotionSensor);
+        const value = await getValueFromPage({
+            changeCheck,
+            log: this.log,
+            verboseLogging: this.config.verbose
+        });
 
-        this.log(`(${config.name}) Value found: "${value}". Old value: "${this.lastValue[config.name]}". Value changed? ${this.lastValue[config.name] !== value}`);
+        this.log(`(${changeCheck.name}) Value found: "${value}". Old value: "${this.cache.getValue(changeCheck.name)}". Value changed? ${this.cache.getValue(changeCheck.name) !== value}`);
 
-        if (this.lastValue[config.name] !== value) {
-            // Only send update if lastValue is already known
-            if (this.lastValue[config.name]) {
-                service?.updateCharacteristic(hap.Characteristic.OccupancyDetected, hap.Characteristic.OccupancyDetected.OCCUPANCY_DETECTED);
+        if (this.cache.getValue(changeCheck.name) !== value) {
+            // Only send update if a value changed more than once. This prevents detection from firing on first run. 
+            if (this.cache.hasValueChangedMoreThanOnce(changeCheck.name)) {
+                service?.updateCharacteristic(hap.Characteristic.MotionDetected, true);
 
+                // Disable motion sensor automatically after 1 second
                 setTimeout(() => {
-                    service?.updateCharacteristic(hap.Characteristic.OccupancyDetected, hap.Characteristic.OccupancyDetected.OCCUPANCY_NOT_DETECTED);
+                    service?.updateCharacteristic(hap.Characteristic.MotionDetected, false);
                 }, 1000);
             }
 
-            this.lastValue[config.name] = value;
+            this.cache.setValue(changeCheck.name, value);
         } else {
-            service?.updateCharacteristic(hap.Characteristic.OccupancyDetected, hap.Characteristic.OccupancyDetected.OCCUPANCY_NOT_DETECTED);
+            service?.updateCharacteristic(hap.Characteristic.MotionDetected, false);
         }
     }
 
@@ -151,30 +157,9 @@ class WebsiteChangeCheckPlatform implements DynamicPlatformPlugin {
 
             if (this.config.verbose) { this.log(`addNewDevices: ${acc.name}`); }
 
-            accessory.addService(hap.Service.OccupancySensor, acc.name);
+            accessory.addService(hap.Service.MotionSensor, acc.name);
             this.api.registerPlatformAccessories(PLUGIN_NAME, PLATFORM_NAME, [accessory]);
             this.accessories.push(accessory);
         });
-    }
-
-    // ----------------------------------------------------------------------
-
-    async getValueFromPage(config: ChangeCheck) {
-        if (this.config.verbose) { this.log('Initialize browser'); }
-        const browser = await puppeteer.launch({
-            executablePath: '/usr/bin/chromium-browser',
-            args: ['--no-sandbox', '--disable-setuid-sandbox']
-        });
-
-        if (this.config.verbose) { this.log('Browser initialized'); }
-        const page = await browser.newPage();
-        await page.goto(config.url, { waitUntil: 'networkidle2' });
-        await page.waitForSelector(config.selector);
-        if (this.config.verbose) { this.log('Selector loaded'); }
-        const element = await page.$(config.selector);
-        const text = await page.evaluate(element => { return element.textContent; }, element);
-        await browser.close();
-
-        return text;
     }
 }
