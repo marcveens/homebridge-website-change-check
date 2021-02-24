@@ -40,7 +40,10 @@ class WebsiteChangeCheckPlatform implements DynamicPlatformPlugin {
     constructor(log: Logging, defaultConfig: PlatformConfig, api: API) {
         this.log = log;
         this.api = api;
-        this.config = defaultConfig as CustomPlatformConfig;
+        this.config = Object.assign({}, {
+            changeChecks: [],
+            platform: ''
+        }, defaultConfig as CustomPlatformConfig);
 
         /*
          * When this event is fired, homebridge restored all cached accessories from disk and did call their respective
