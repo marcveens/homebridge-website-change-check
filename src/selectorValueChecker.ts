@@ -5,6 +5,7 @@ import { ChangeCheck } from './types/optionTypes';
 require('dotenv').config();
 
 type getValueFromPageProps = {
+    executablePath: string;
     changeCheck: ChangeCheck;
     waitForSelectorTimeout?: number;
     log: Logging | Console['log'];
@@ -14,17 +15,15 @@ type getValueFromPageProps = {
 export const getValueFromPage = async (props: getValueFromPageProps) => {
     let foundValue: string | undefined = undefined;
     const browser = await puppeteer.launch({
-        executablePath: process.env.PUPPETEER_PATH || '/usr/bin/chromium-browser',
+        executablePath: props.executablePath,
         args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
 
     try {
         if (props.verboseLogging) { props.log('Initialize browser'); }
 
-
-        if (props.verboseLogging) { props.log('Browser initialized'); }
-
         const page = await browser.newPage();
+        if (props.verboseLogging) { props.log('Browser initialized'); }
         await page.goto(props.changeCheck.url, { waitUntil: 'networkidle2' });
         await page.waitForSelector(props.changeCheck.selector, {
             timeout: props.waitForSelectorTimeout || 30000 // 30 seconds

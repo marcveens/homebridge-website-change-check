@@ -9,6 +9,7 @@ describe('selectorValueChecker', () => {
                 selector: '.markdown-body h1',
                 url: 'https://github.com/marcveens/homebridge-website-change-check',
             },
+            executablePath: process.env.PUPPETEER_PATH || '',
             log: console.log
         })
             .then(value => {
@@ -24,6 +25,7 @@ describe('selectorValueChecker', () => {
                 selector: '.markdown-body h98',
                 url: 'https://github.com/marcveens/homebridge-website-change-check',
             },
+            executablePath: process.env.PUPPETEER_PATH || '',
             log: console.log,
             waitForSelectorTimeout: 2000 // Used to make the test not wait 30 seconds before timing out
         })
