@@ -9,6 +9,6 @@ describe('FileCheck', () => {
 
     it('should return false if file does not exists', async () => {
         // arrange + act + assert
-        return expect(FileCheck.exists(path.join(__dirname, './data/mock2.txt'))).rejects.toBe(false);
+        return expect(FileCheck.exists(path.join(__dirname, './data/mock2.txt'))).resolves.toBe(false);
     });
 });
