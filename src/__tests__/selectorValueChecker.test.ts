@@ -7,7 +7,7 @@ describe('selectorValueChecker', () => {
             changeCheck: {
                 name: 'test',
                 selector: '.markdown-body h1',
-                url: 'https://github.com/marcveens/homebridge-website-change-check',
+                url: 'http://localhost:8080/available-selector',
             },
             executablePath: process.env.PUPPETEER_PATH || '',
             log: console.log
@@ -23,11 +23,11 @@ describe('selectorValueChecker', () => {
             changeCheck: {
                 name: 'test',
                 selector: '.markdown-body h98',
-                url: 'https://github.com/marcveens/homebridge-website-change-check',
+                url: 'http://localhost:8080/available-selector',
             },
             executablePath: process.env.PUPPETEER_PATH || '',
             log: console.log,
-            waitForSelectorTimeout: 2000 // Used to make the test not wait 30 seconds before timing out
+            waitForSelectorTimeout: 1000 // Used to make the test not wait 30 seconds before timing out
         })
             .then(value => {
                 expect(value).toBe(undefined);
@@ -40,11 +40,11 @@ describe('selectorValueChecker', () => {
             changeCheck: {
                 name: 'test',
                 selector: '.markdown-body h98',
-                url: 'https://github.com/marcveens/homebridge-website-change-check',
+                url: 'http://localhost:8080/available-selector',
             },
             executablePath: process.env.PUPPETEER_PATH || '',
             log: console.log,
-            waitForSelectorTimeout: 2000, // Used to make the test not wait 30 seconds before timing out,
+            waitForSelectorTimeout: 1000, // Used to make the test not wait 30 seconds before timing out,
             previousValue: 'testValue'
         })
             .then(value => {
