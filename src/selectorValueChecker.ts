@@ -10,6 +10,7 @@ type getValueFromPageProps = {
     waitForSelectorTimeout?: number;
     log: Logging | Console['log'];
     verboseLogging?: boolean;
+    previousValue?: string;
 };
 
 export const getValueFromPage = async (props: getValueFromPageProps) => {
@@ -38,7 +39,7 @@ export const getValueFromPage = async (props: getValueFromPageProps) => {
     } catch (e) {
         props.log(e);
 
-        foundValue = undefined;
+        foundValue = props.previousValue;
     } finally {
         await browser.close();
 

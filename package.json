@@ -1,7 +1,7 @@
 {
   "name": "homebridge-website-change-check",
   "displayName": "Homebridge Website Change Check",
-  "version": "1.0.4",
+  "version": "1.0.5-beta.0",
   "description": "Homebridge plugin for checking if a value on a website has changed.",
   "main": "dist/index.js",
   "scripts": {
@@ -10,7 +10,8 @@
     "prepublishOnly": "npm run build",
     "postpublish": "npm run clean",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "publish-beta": "npm publish --tag beta"
   },
   "funding": [
     {
