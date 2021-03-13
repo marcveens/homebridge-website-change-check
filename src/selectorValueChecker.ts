@@ -9,7 +9,7 @@ type getValueFromPageProps = {
     executablePath: string;
     changeCheck: ChangeCheck;
     waitForSelectorTimeout?: number;
-    log: Logging | Console['log'];
+    log: Logging;
     verboseLogging?: boolean;
     previousValue?: string;
 };
@@ -44,7 +44,7 @@ export const getValueFromPage = async (props: getValueFromPageProps) => {
 
         foundValue = text.replace(/(?:\r\n|\r|\n)/g, '').replace(/\s+/g, ' ').trim();
     } catch (e) {
-        props.log(e.toString());
+        props.log.warn.bind(e.toString());
 
         foundValue = props.previousValue;
     } finally {
