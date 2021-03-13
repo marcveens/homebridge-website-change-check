@@ -55,6 +55,6 @@
   },
   "dependencies": {
     "dotenv": "^8.2.0",
-    "puppeteer-core": "^8.0.0"
+    "puppeteer-core": "^7.1.0"
   }
 }
