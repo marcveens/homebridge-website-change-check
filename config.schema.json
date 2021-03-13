@@ -80,13 +80,16 @@
                                     "selector": {
                                         "title": "Selector",
                                         "description": "For example: \".module--header .module__title\"",
-                                        "type": "string"
+                                        "type": "string",
+                                        "condition": {
+                                            "functionBody": "return model.changeChecks[arrayIndices[0]].stepsBeforeCheck[arrayIndices[1]].action === 'setSelectValue' || return model.changeChecks[arrayIndices[0]].stepsBeforeCheck[arrayIndices[1]].action === 'setInputValue' || return model.changeChecks[arrayIndices[0]].stepsBeforeCheck[arrayIndices[1]].action === 'click';"
+                                        }
                                     },
                                     "value": {
                                         "title": "Value",
                                         "type": "string",
                                         "condition": {
-                                            "functionBody": "return model.changeChecks[arrayIndices[0]].stepsBeforeCheck[arrayIndices[1]].action === 'click';"
+                                            "functionBody": "return model.changeChecks[arrayIndices[0]].stepsBeforeCheck[arrayIndices[1]].action === 'setSelectValue' || return model.changeChecks[arrayIndices[0]].stepsBeforeCheck[arrayIndices[1]].action === 'setInputValue' || return model.changeChecks[arrayIndices[0]].stepsBeforeCheck[arrayIndices[1]].action === 'waitForMilliseconds';"
                                         }
                                     }
                                 }
