@@ -23,6 +23,8 @@ export const runStepsBeforeCheck = async (page: Page, steps: TriggerStep[]) => {
         } else if (step.action === 'waitForMilliseconds') {
             await asyncTimeout(Number(step.value));
 
+        } else if (step.action === 'click') {
+            await page.click(step.selector);
         }
     }
 };

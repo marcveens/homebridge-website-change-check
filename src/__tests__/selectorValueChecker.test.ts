@@ -53,16 +53,38 @@ describe('selectorValueChecker', () => {
             });
     });
 
-    it('should return value after a select and input step', () => {
+    it('should return value after a select and input change', () => {
         // arrange + act + assert
         return getValueFromPage({
             changeCheck: {
                 name: 'test',
                 selector: '.output-value',
-                url: 'http://localhost:8080/form',
+                url: 'http://localhost:8080/form-change',
                 stepsBeforeCheck: [
                     { action: 'setSelectValue', selector: '#select', value: '2' },
                     { action: 'setInputValue', selector: '#input', value: 'test' }
+                ]
+            },
+            executablePath: process.env.PUPPETEER_PATH || '',
+            log: console as unknown as Logging,
+            waitForSelectorTimeout: 7000
+        })
+            .then(value => {
+                expect(value).toBe('This is what I\'m looking for.');
+            });
+    });
+
+    it('should return value after a select and input change and button click', () => {
+        // arrange + act + assert
+        return getValueFromPage({
+            changeCheck: {
+                name: 'test',
+                selector: '.output-value',
+                url: 'http://localhost:8080/form-click',
+                stepsBeforeCheck: [
+                    { action: 'setSelectValue', selector: '#select', value: '2' },
+                    { action: 'setInputValue', selector: '#input', value: 'test' },
+                    { action: 'click', selector: '#button' }
                 ]
             },
             executablePath: process.env.PUPPETEER_PATH || '',
