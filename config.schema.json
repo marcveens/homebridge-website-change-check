@@ -67,6 +67,12 @@
                                                 "enum": [
                                                     "waitForMilliseconds"
                                                 ]
+                                            },
+                                            {
+                                                "title": "click",
+                                                "enum": [
+                                                    "click"
+                                                ]
                                             }
                                         ],
                                         "required": true
@@ -79,7 +85,9 @@
                                     "value": {
                                         "title": "Value",
                                         "type": "string",
-                                        "required": true
+                                        "condition": {
+                                            "functionBody": "return model.changeChecks[arrayIndices[0]].stepsBeforeCheck[arrayIndices[1]].action === 'click';"
+                                        }
                                     }
                                 }
                             }

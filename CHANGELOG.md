@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.6] - 2021-03-13
 ### Added
 - Added `click` as a `stepsBeforeCheck` action
+- Added travis.yml for CI
 ### Changed
 - Migrated from `puppeteer` to `playwright` due to less code writing and seemingly better stability. 
 - Abstracted some plugin code from Homebridge to make it better testable.   

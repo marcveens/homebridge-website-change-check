@@ -80,6 +80,7 @@ Type | Remarks
 --- | ---
 `{ action: 'setSelectValue', selector: string, value: string \| number \| '*' }` | Used for selecting a value in a `select` element. The value can be either a string, a number, or a `*`. The `*` value makes sure the first possible truthy value will be set. 
 `{ action: 'setInputValue', selector: string, value: string \| number }` | Used for setting a value in an `input` element.
+`{ action: 'click', selector: string }` | Used for clicking an element
 `{ action: 'waitForMilliseconds', value: number }` | Used for waiting a certain amount of milliseconds before the next action takes place
 
 #### stepsBeforeCheck example usage in config
