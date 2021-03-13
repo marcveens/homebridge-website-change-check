@@ -29,7 +29,8 @@
                         "selector": {
                             "title": "Selector",
                             "description": "For example: \".module--header .module__title\"",
-                            "type": "string"
+                            "type": "string",
+                            "required": true
                         },
                         "checkInterval": {
                             "title": "Polling interval",

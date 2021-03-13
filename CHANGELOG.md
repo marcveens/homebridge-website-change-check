@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Added `click` as a `stepsBeforeCheck` action
 - Added travis.yml for CI
+
 ### Changed
 - Migrated from `puppeteer` to `playwright` due to less code writing and seemingly better stability. 
 - Abstracted some plugin code from Homebridge to make it better testable.   
@@ -16,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.5] - 2021-03-13
 ### Added
 - `stepsBeforeCheck` option for every changeCheck. See README.md for how to use it.
+
 ### Changed
 - Prevent motion detection when a timeout occurs
 
