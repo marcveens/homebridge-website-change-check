@@ -8,9 +8,9 @@ import {
     PlatformConfig
 } from 'homebridge';
 import { ChangeCheck, Options } from './types/optionTypes';
-import { getValueFromPage } from './selectorValueChecker';
 import { Cache } from './Cache';
 import { FileCheck } from './FileCheck';
+import { updateAccessoryStateHandler } from './updateAccessoryStateHandler';
 
 type CustomPlatformConfig = PlatformConfig & Options;
 
@@ -115,31 +115,21 @@ class WebsiteChangeCheckPlatform implements DynamicPlatformPlugin {
 
     async updateAccessoryState(accessory: PlatformAccessory, changeCheck: ChangeCheck) {
         const service = accessory.getService(hap.Service.MotionSensor);
-        const value = await getValueFromPage({
-            executablePath: browserPath,
+
+        updateAccessoryStateHandler({
+            browserPath,
             changeCheck,
             log: this.log,
             verboseLogging: this.config.verbose,
-            previousValue: this.cache.getValue(changeCheck.name)
-        });
-
-        this.log(`(${changeCheck.name}) Value found: "${value}". Old value: "${this.cache.getValue(changeCheck.name)}". Value changed? ${this.cache.getValue(changeCheck.name) !== value}`);
-
-        if (this.cache.getValue(changeCheck.name) !== value) {
-            this.cache.setValue(changeCheck.name, value);
-
-            // Only send update if a value changed more than once. This prevents detection from firing on first run. 
-            if (this.cache.hasValueChangedMoreThanOnce(changeCheck.name)) {
-                service?.updateCharacteristic(hap.Characteristic.MotionDetected, true);
-
-                // Disable motion sensor automatically after 1 second
-                setTimeout(() => {
+            cache: this.cache,
+            toggleUpdate: state => {
+                if (state) {
+                    service?.updateCharacteristic(hap.Characteristic.MotionDetected, true);
+                } else {
                     service?.updateCharacteristic(hap.Characteristic.MotionDetected, false);
-                }, 1000);
+                }
             }
-        } else {
-            service?.updateCharacteristic(hap.Characteristic.MotionDetected, false);
-        }
+        });
     }
 
     /** Check if accessory is registered in the Homebridge config */

@@ -1,4 +1,4 @@
-import { Logging } from "homebridge";
+import { mockLogger } from "../mock/mockLogger";
 import { getValueFromPage } from "../selectorValueChecker";
 
 describe('selectorValueChecker', () => {
@@ -10,8 +10,8 @@ describe('selectorValueChecker', () => {
                 selector: '.markdown-body h1',
                 url: 'http://localhost:8080/available-selector',
             },
-            executablePath: process.env.PUPPETEER_PATH || '',
-            log: console as unknown as Logging,
+            browserPath: process.env.PUPPETEER_PATH || '',
+            log: mockLogger,
         })
             .then(value => {
                 expect(value).toBe('homebridge-website-change-check');
@@ -26,30 +26,12 @@ describe('selectorValueChecker', () => {
                 selector: '.markdown-body h98',
                 url: 'http://localhost:8080/available-selector',
             },
-            executablePath: process.env.PUPPETEER_PATH || '',
-            log: console as unknown as Logging,
+            browserPath: process.env.PUPPETEER_PATH || '',
+            log: mockLogger,
             waitForSelectorTimeout: 1000 // Used to make the test not wait 30 seconds before timing out
         })
             .then(value => {
                 expect(value).toBe(undefined);
-            });
-    });
-
-    it('should return previous value if selector not found after first visit', () => {
-        // arrange + act + assert
-        return getValueFromPage({
-            changeCheck: {
-                name: 'test',
-                selector: '.markdown-body h98',
-                url: 'http://localhost:8080/available-selector',
-            },
-            executablePath: process.env.PUPPETEER_PATH || '',
-            log: console as unknown as Logging,
-            waitForSelectorTimeout: 1000, // Used to make the test not wait 30 seconds before timing out,
-            previousValue: 'testValue'
-        })
-            .then(value => {
-                expect(value).toBe('testValue');
             });
     });
 
@@ -65,8 +47,8 @@ describe('selectorValueChecker', () => {
                     { action: 'setInputValue', selector: '#input', value: 'test' }
                 ]
             },
-            executablePath: process.env.PUPPETEER_PATH || '',
-            log: console as unknown as Logging,
+            browserPath: process.env.PUPPETEER_PATH || '',
+            log: mockLogger,
             waitForSelectorTimeout: 7000
         })
             .then(value => {
@@ -87,8 +69,8 @@ describe('selectorValueChecker', () => {
                     { action: 'click', selector: '#button' }
                 ]
             },
-            executablePath: process.env.PUPPETEER_PATH || '',
-            log: console as unknown as Logging,
+            browserPath: process.env.PUPPETEER_PATH || '',
+            log: mockLogger,
             waitForSelectorTimeout: 7000
         })
             .then(value => {
@@ -122,7 +104,7 @@ describe('selectorValueChecker', () => {
     //             ]
     //         },
     //         executablePath: process.env.PUPPETEER_PATH || '',
-    //         log: console as unknown as Logging,
+    //         log: mockLogger,
     //         waitForSelectorTimeout: 7000
     //     })
     //         .then(value => {

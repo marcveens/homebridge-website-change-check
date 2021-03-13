@@ -6,18 +6,17 @@ import { ChangeCheck } from './types/optionTypes';
 require('dotenv').config();
 
 type getValueFromPageProps = {
-    executablePath: string;
+    browserPath: string;
     changeCheck: ChangeCheck;
     waitForSelectorTimeout?: number;
     log: Logging;
     verboseLogging?: boolean;
-    previousValue?: string;
 };
 
 export const getValueFromPage = async (props: getValueFromPageProps) => {
     let foundValue: string | undefined = undefined;
     const browser = await chromium.launch({
-        executablePath: props.executablePath
+        executablePath: props.browserPath
     });
 
     try {
@@ -44,7 +43,7 @@ export const getValueFromPage = async (props: getValueFromPageProps) => {
     } catch (e) {
         props.log.warn(e.toString());
 
-        foundValue = props.previousValue;
+        foundValue = undefined;
     } finally {
         await browser.close();
 

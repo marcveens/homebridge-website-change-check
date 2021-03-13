@@ -1,9 +1,6 @@
 import { Page } from 'playwright-core';
 import { TriggerStep } from './types/TriggerStep';
-
-const asyncTimeout = async (ms: number) => {
-    return new Promise(resolve => setTimeout(resolve, ms));
-};
+import { asyncTimeout } from './utils/asyncTimeout';
 
 export const runStepsBeforeCheck = async (page: Page, steps: TriggerStep[]) => {
     for (const step of steps) {
