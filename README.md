@@ -5,6 +5,7 @@
 [![verified-by-homebridge](https://badgen.net/badge/homebridge/verified/purple)](https://github.com/homebridge/homebridge/wiki/Verified-Plugins)
 [![homebridge-website-change-check](https://badgen.net/npm/v/homebridge-website-change-check?icon=npm)](https://www.npmjs.com/package/homebridge-website-change-check)
 [![mit-license](https://badgen.net/npm/license/homebridge-website-change-check)](https://github.com/marcveens/homebridge-website-change-check/blob/master/LICENSE)
+[![Build Status](https://travis-ci.com/marcveens/homebridge-website-change-check.svg?branch=master)](https://travis-ci.com/marcveens/homebridge-website-change-check)
 
 </span>
 

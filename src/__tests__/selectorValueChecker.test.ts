@@ -12,11 +12,12 @@ describe('selectorValueChecker', () => {
             },
             browserPath: process.env.PUPPETEER_PATH || '',
             log: mockLogger,
+            waitForSelectorTimeout: 5000
         })
             .then(value => {
                 expect(value).toBe('homebridge-website-change-check');
             });
-    });
+    }, 10000);
 
     it('should return null if selector not found', () => {
         // arrange + act + assert
@@ -49,12 +50,12 @@ describe('selectorValueChecker', () => {
             },
             browserPath: process.env.PUPPETEER_PATH || '',
             log: mockLogger,
-            waitForSelectorTimeout: 7000
+            waitForSelectorTimeout: 5000
         })
             .then(value => {
                 expect(value).toBe('This is what I\'m looking for.');
             });
-    });
+    }, 10000);
 
     it('should return value after a select and input change and button click', () => {
         // arrange + act + assert
@@ -71,12 +72,12 @@ describe('selectorValueChecker', () => {
             },
             browserPath: process.env.PUPPETEER_PATH || '',
             log: mockLogger,
-            waitForSelectorTimeout: 7000
+            waitForSelectorTimeout: 5000
         })
             .then(value => {
                 expect(value).toBe('This is what I\'m looking for.');
             });
-    });
+    }, 10000);
 
     // it('should run practice test', () => {
     //     // arrange + act + assert

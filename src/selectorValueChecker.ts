@@ -23,7 +23,13 @@ export const getValueFromPage = async (props: getValueFromPageProps) => {
         if (props.verboseLogging) { props.log('Initialize browser'); }
 
         const page = await browser.newPage();
+
+        if (process.env.NODE_ENV === 'test') {
+            page.setDefaultTimeout(2000);
+        }
+        
         if (props.verboseLogging) { props.log('Browser initialized'); }
+        
         await page.goto(props.changeCheck.url, { waitUntil: 'networkidle' });
 
         // Execute steps before actual check
