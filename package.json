@@ -1,7 +1,7 @@
 {
   "name": "homebridge-website-change-check",
   "displayName": "Homebridge Website Change Check",
-  "version": "1.0.5-beta.2",
+  "version": "1.0.5-beta.3",
   "description": "Homebridge plugin for checking if a value on a website has changed.",
   "main": "dist/index.js",
   "scripts": {
