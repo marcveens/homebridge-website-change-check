@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <form action="">
+        <select id="select">
+            <option></option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+        </select>
+
+        <input type="text" id="input" />
+
+        <div class="output"></div>
+    </form>
+
+    <script>
+        (() => {
+            const select = document.querySelector('#select');
+            const input = document.querySelector('#input');
+            const output = document.querySelector('.output');
+
+            function setMessage() {
+                const selectValue = select ? select.value : '';
+                const inputValue = input ? input.value : '';
+
+                if (selectValue && inputValue && output) {
+                    const outputValueElement = document.createElement('div');
+                    outputValueElement.classList.add('output-value');
+                    outputValueElement.innerText = 'This is what I\'m looking for.';
+                    setTimeout(() => {
+                        output.appendChild(outputValueElement);
+                    }, 300);
+                }
+            }
+
+            if (select && input) {
+                select.addEventListener('change', setMessage);
+                input.addEventListener('change', setMessage);
+            }
+        })();
+    </script>
+</body>
+
+</html>

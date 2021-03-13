@@ -119,7 +119,8 @@ class WebsiteChangeCheckPlatform implements DynamicPlatformPlugin {
             executablePath: chromiumPath,
             changeCheck,
             log: this.log,
-            verboseLogging: this.config.verbose
+            verboseLogging: this.config.verbose,
+            previousValue: this.cache.getValue(changeCheck.name)
         });
 
         this.log(`(${changeCheck.name}) Value found: "${value}". Old value: "${this.cache.getValue(changeCheck.name)}". Value changed? ${this.cache.getValue(changeCheck.name) !== value}`);

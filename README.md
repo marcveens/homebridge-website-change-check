@@ -50,7 +50,7 @@ Example configuration:
                 "selector": ".module--header .module__title span",
                 "checkInterval": 300000
             }
-        ],
+        ]
     }
   ]
 }
@@ -58,20 +58,60 @@ Example configuration:
 
 Every device stated in the config will be automatically added as an accessory to Homekit. 
 
-#### Platform Configuration fields
-- `platform` [required]
-Should always be **"WebsiteChangeCheck"**.
-- `changeChecks` [required]
-A list of your website checks.
-#### changeChecks Configuration fields
-- `name` [required]
-Custom name for your check
-- `url` [required]
-URL of the website/page you want to check
-- `selector` [required]
-Selector of the value you want to compare. 
-- `checkInterval` [optional]
-Interval of the checks
+### Platform Configuration fields
+
+Property | Required? | Remarks
+--- | --- | ---
+`platform` | :heavy_check_mark: | Should always be **"WebsiteChangeCheck"**.
+`changeChecks` | :heavy_check_mark: | A list of your website checks.
+
+### changeChecks configuration fields
+Property | Required? | Remarks
+--- | --- | ---
+`name` | :heavy_check_mark: |Custom name for your check
+`url` | :heavy_check_mark: | URL of the website/page you want to check
+`selector` | :heavy_check_mark: | Selector of the value you want to compare. 
+`checkInterval` | | Interval of the checks
+`stepsBeforeCheck` | | List of steps that should be executed before checking for the selector. Could be useful if, for example, a value is only visible after filling in a form. See [configuration](#stepsbeforecheck-configuration-fields)
+
+### stepsBeforeCheck configuration options
+Type | Remarks 
+--- | ---
+`{ action: 'setSelectValue', selector: string, value: string \| number \| '*' }` | Used for selecting a value in a `select` element. The value can be either a string, a number, or a `*`. The `*` value makes sure the first possible truthy value will be set. 
+`{ action: 'setInputValue', selector: string, value: string \| number }` | Used for setting a value in an `input` element.
+`{ action: 'waitForMilliseconds', value: number }` | Used for waiting a certain amount of milliseconds before the next action takes place
+
+#### stepsBeforeCheck example usage in config
+```js
+{
+  "platforms": [
+    {
+        "platform": "WebsiteChangeCheck",
+        "changeChecks": [
+            {
+                "name": "BBC check",
+                "url": "http://bbc.com/",
+                "selector": ".module--header .module__title span",
+                "checkInterval": 300000,
+                "stepsBeforeCheck": [
+                    {
+                        "action": "waitForMilliseconds",
+                        "value": 500
+                    },
+                    {
+                        "action": "setSelectValue", 
+                        "selector": "#mySelectId", 
+                        "value": "*"
+                    }
+                ]
+            }
+        ]
+    }
+  ]
+}
+```
+In this example the script will wait 500 milliseconds, then set the first possible truthy value in the #mySelectId `select` element, after which it checks the value in `.module--header .module__title span`.
+
 
 ## Contributors
 If you'd like to contribute to this repository, feel free to! 

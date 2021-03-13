@@ -1,3 +1,4 @@
+import { Logging } from "homebridge";
 import { getValueFromPage } from "../selectorValueChecker";
 
 describe('selectorValueChecker', () => {
@@ -7,10 +8,10 @@ describe('selectorValueChecker', () => {
             changeCheck: {
                 name: 'test',
                 selector: '.markdown-body h1',
-                url: 'https://github.com/marcveens/homebridge-website-change-check',
+                url: 'http://localhost:8080/available-selector',
             },
             executablePath: process.env.PUPPETEER_PATH || '',
-            log: console.log
+            log: console as unknown as Logging,
         })
             .then(value => {
                 expect(value).toBe('homebridge-website-change-check');
@@ -23,14 +24,53 @@ describe('selectorValueChecker', () => {
             changeCheck: {
                 name: 'test',
                 selector: '.markdown-body h98',
-                url: 'https://github.com/marcveens/homebridge-website-change-check',
+                url: 'http://localhost:8080/available-selector',
             },
             executablePath: process.env.PUPPETEER_PATH || '',
-            log: console.log,
-            waitForSelectorTimeout: 2000 // Used to make the test not wait 30 seconds before timing out
+            log: console as unknown as Logging,
+            waitForSelectorTimeout: 1000 // Used to make the test not wait 30 seconds before timing out
         })
             .then(value => {
                 expect(value).toBe(undefined);
+            });
+    });
+
+    it('should return previous value if selector not found after first visit', () => {
+        // arrange + act + assert
+        return getValueFromPage({
+            changeCheck: {
+                name: 'test',
+                selector: '.markdown-body h98',
+                url: 'http://localhost:8080/available-selector',
+            },
+            executablePath: process.env.PUPPETEER_PATH || '',
+            log: console as unknown as Logging,
+            waitForSelectorTimeout: 1000, // Used to make the test not wait 30 seconds before timing out,
+            previousValue: 'testValue'
+        })
+            .then(value => {
+                expect(value).toBe('testValue');
+            });
+    });
+
+    it('should return value after a select and input step', () => {
+        // arrange + act + assert
+        return getValueFromPage({
+            changeCheck: {
+                name: 'test',
+                selector: '.output-value',
+                url: 'http://localhost:8080/form',
+                stepsBeforeCheck: [
+                    { action: 'setSelectValue', selector: '#select', value: '2' },
+                    { action: 'setInputValue', selector: '#input', value: 'test' }
+                ]
+            },
+            executablePath: process.env.PUPPETEER_PATH || '',
+            log: console as unknown as Logging,
+            waitForSelectorTimeout: 7000
+        })
+            .then(value => {
+                expect(value).toBe('This is what I\'m looking for.');
             });
     });
 });
