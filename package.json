@@ -1,7 +1,7 @@
 {
   "name": "homebridge-website-change-check",
   "displayName": "Homebridge Website Change Check",
-  "version": "1.0.5",
+  "version": "1.0.6-beta.0",
   "description": "Homebridge plugin for checking if a value on a website has changed.",
   "main": "dist/index.js",
   "scripts": {
@@ -10,7 +10,7 @@
     "prepublishOnly": "npm run build",
     "postpublish": "npm run clean",
     "test": "jest",
-    "test:watch": "jest --watch",
+    "test:watch": "jest --watch --detectOpenHandles",
     "test:ci": "start-server-and-test serve http://localhost:8080 test",
     "publish-beta": "npm publish --tag beta",
     "serve": "http-server src/__tests__/pages"
@@ -55,6 +55,6 @@
   },
   "dependencies": {
     "dotenv": "^8.2.0",
-    "puppeteer-core": "^7.1.0"
+    "playwright": "^1.9.2"
   }
 }

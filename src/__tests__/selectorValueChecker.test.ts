@@ -73,4 +73,38 @@ describe('selectorValueChecker', () => {
                 expect(value).toBe('This is what I\'m looking for.');
             });
     });
+
+    // it('should run practice test', () => {
+    //     // arrange + act + assert
+    //     return getValueFromPage({
+    //         changeCheck: {
+    //             "name": "communityvaccination",
+    //             "url": "https://www.communityvaccination.org/default.aspx",
+    //             "selector": "#ContentPlaceHolder1_UpdatePanelSchedule tr:nth-child(2)",
+    //             "checkInterval": 300000,
+    //             "stepsBeforeCheck": [
+    //                 {
+    //                     "action": "setSelectValue",
+    //                     "selector": "#ContentPlaceHolder1_DropDownListProfessions",
+    //                     "value": "68"
+    //                 },
+    //                 {
+    //                     "action": "waitForMilliseconds",
+    //                     "value": 2000
+    //                 },
+    //                 {
+    //                     "action": "setSelectValue",
+    //                     "selector": "#ContentPlaceHolder1_DropDownListOpKey",
+    //                     "value": "*"
+    //                 }
+    //             ]
+    //         },
+    //         executablePath: process.env.PUPPETEER_PATH || '',
+    //         log: console as unknown as Logging,
+    //         waitForSelectorTimeout: 7000
+    //     })
+    //         .then(value => {
+    //             expect(value).toBe('This is what I\'m looking for.');
+    //         });
+    // }, 20000);
 });
