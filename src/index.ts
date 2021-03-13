@@ -123,6 +123,8 @@ class WebsiteChangeCheckPlatform implements DynamicPlatformPlugin {
             verboseLogging: this.config.verbose,
             cache: this.cache,
             toggleUpdate: state => {
+                this.log('state', state);
+                this.log('service', service);
                 if (state) {
                     service?.updateCharacteristic(hap.Characteristic.MotionDetected, true);
                 } else {
