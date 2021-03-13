@@ -1,4 +1,4 @@
-import { Page } from 'playwright';
+import { Page } from 'playwright-core';
 import { TriggerStep } from './types/TriggerStep';
 
 const asyncTimeout = async (ms: number) => {

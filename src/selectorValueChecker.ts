@@ -1,5 +1,5 @@
 import { Logging } from 'homebridge';
-import { selectors, webkit } from 'playwright';
+import { chromium } from 'playwright-core';
 import { runStepsBeforeCheck } from './runStepsBeforeCheck';
 import { ChangeCheck } from './types/optionTypes';
 
@@ -16,11 +16,13 @@ type getValueFromPageProps = {
 
 export const getValueFromPage = async (props: getValueFromPageProps) => {
     let foundValue: string | undefined = undefined;
-    const browser = await webkit.launch();
+    const browser = await chromium.launch({
+        executablePath: props.executablePath
+    });
 
     try {
         if (props.verboseLogging) { props.log('Initialize browser'); }
-        
+
         const page = await browser.newPage();
         if (props.verboseLogging) { props.log('Browser initialized'); }
         await page.goto(props.changeCheck.url, { waitUntil: 'networkidle' });

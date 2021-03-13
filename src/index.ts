@@ -27,7 +27,7 @@ export = (api: API) => {
     api.registerPlatform(PLUGIN_NAME, PLATFORM_NAME, WebsiteChangeCheckPlatform);
 };
 
-const chromiumPath = process.env.PUPPETEER_PATH || '/usr/bin/chromium-browser';
+const browserPath = process.env.PUPPETEER_PATH || '/usr/bin/chromium-browser';
 
 class WebsiteChangeCheckPlatform implements DynamicPlatformPlugin {
     private readonly log: Logging;
@@ -90,10 +90,10 @@ class WebsiteChangeCheckPlatform implements DynamicPlatformPlugin {
             this.log(`Accessories total: ${this.accessories.length}`);
         }
 
-        // if (!await FileCheck.exists(chromiumPath)) {
-        //     this.log.error('Chromium browser is required but is not installed. \nRun "sudo apt install chromium-browser chromium-codecs-ffmpeg" in the Homebridge terminal in order to fix this.');
-        //     return;
-        // }
+        if (!await FileCheck.exists(browserPath)) {
+            this.log.error('Chromium browser is required but is not installed. \nRun "sudo apt install chromium-browser chromium-codecs-ffmpeg" in the Homebridge terminal in order to fix this.');
+            return;
+        }
 
         for (let i = 0; i < this.accessories.length; i++) {
             const deviceConfig = this.config.changeChecks.find(c => c.name === this.accessories[i].displayName);
@@ -116,7 +116,7 @@ class WebsiteChangeCheckPlatform implements DynamicPlatformPlugin {
     async updateAccessoryState(accessory: PlatformAccessory, changeCheck: ChangeCheck) {
         const service = accessory.getService(hap.Service.MotionSensor);
         const value = await getValueFromPage({
-            executablePath: chromiumPath,
+            executablePath: browserPath,
             changeCheck,
             log: this.log,
             verboseLogging: this.config.verbose,
