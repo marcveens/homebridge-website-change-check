@@ -66,7 +66,7 @@ describe('selectorValueChecker', () => {
                 stepsBeforeCheck: [
                     { action: 'setSelectValue', selector: '#select', value: '2' },
                     { action: 'setInputValue', selector: '#input', value: 'test' },
-                    { action: 'click', selector: '#button' }
+                    { action: 'click', selector: '#button2' }
                 ]
             },
             browserPath: process.env.PUPPETEER_PATH || '',
