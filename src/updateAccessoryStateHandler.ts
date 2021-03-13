@@ -31,16 +31,20 @@ export const updateAccessoryStateHandler = async (props: HandlerProps) => {
 
     if (value && cache.getValue(changeCheck.name) !== value) {
         cache.setValue(changeCheck.name, value);
+        props.log('save to cache', changeCheck.name, value);
 
+        console.log('hasValueChangedMoreThanOnce ', cache.hasValueChangedMoreThanOnce(changeCheck.name));
         // Only send update if a value changed more than once. This prevents detection from firing on first run. 
         if (cache.hasValueChangedMoreThanOnce(changeCheck.name)) {
+            props.log('trigger true');
             toggleUpdate(true);
-
+            
             // Disable motion sensor automatically after 1 second
             asyncTimeout(1000);
             toggleUpdate(false);
         }
     } else {
+        props.log('trigger false');
         toggleUpdate(false);
     }
 };
