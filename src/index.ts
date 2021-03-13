@@ -90,10 +90,10 @@ class WebsiteChangeCheckPlatform implements DynamicPlatformPlugin {
             this.log(`Accessories total: ${this.accessories.length}`);
         }
 
-        if (!await FileCheck.exists(chromiumPath)) {
-            this.log.error('Chromium browser is required but is not installed. \nRun "sudo apt install chromium-browser chromium-codecs-ffmpeg" in the Homebridge terminal in order to fix this.');
-            return;
-        }
+        // if (!await FileCheck.exists(chromiumPath)) {
+        //     this.log.error('Chromium browser is required but is not installed. \nRun "sudo apt install chromium-browser chromium-codecs-ffmpeg" in the Homebridge terminal in order to fix this.');
+        //     return;
+        // }
 
         for (let i = 0; i < this.accessories.length; i++) {
             const deviceConfig = this.config.changeChecks.find(c => c.name === this.accessories[i].displayName);
