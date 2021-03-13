@@ -37,7 +37,7 @@ export const updateAccessoryStateHandler = async (props: HandlerProps) => {
             toggleUpdate(true);
             
             // Disable motion sensor automatically after 1 second
-            asyncTimeout(1000);
+            await asyncTimeout(1000);
             toggleUpdate(false);
         }
     } else {
