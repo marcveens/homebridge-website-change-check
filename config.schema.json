@@ -82,14 +82,14 @@
                                         "description": "For example: \".module--header .module__title\"",
                                         "type": "string",
                                         "condition": {
-                                            "functionBody": "return model.changeChecks[arrayIndices[0]].stepsBeforeCheck[arrayIndices[1]].action === 'setSelectValue' || return model.changeChecks[arrayIndices[0]].stepsBeforeCheck[arrayIndices[1]].action === 'setInputValue' || return model.changeChecks[arrayIndices[0]].stepsBeforeCheck[arrayIndices[1]].action === 'click';"
+                                            "functionBody": "try { return model.changeChecks[arrayIndices[0]].stepsBeforeCheck[arrayIndices[1]].action === 'setSelectValue' || model.changeChecks[arrayIndices[0]].stepsBeforeCheck[arrayIndices[1]].action === 'setInputValue' || model.changeChecks[arrayIndices[0]].stepsBeforeCheck[arrayIndices[1]].action === 'click'; } catch (e) { return false; }"
                                         }
                                     },
                                     "value": {
                                         "title": "Value",
                                         "type": "string",
                                         "condition": {
-                                            "functionBody": "return model.changeChecks[arrayIndices[0]].stepsBeforeCheck[arrayIndices[1]].action === 'setSelectValue' || return model.changeChecks[arrayIndices[0]].stepsBeforeCheck[arrayIndices[1]].action === 'setInputValue' || return model.changeChecks[arrayIndices[0]].stepsBeforeCheck[arrayIndices[1]].action === 'waitForMilliseconds';"
+                                            "functionBody": "try { return model.changeChecks[arrayIndices[0]].stepsBeforeCheck[arrayIndices[1]].action === 'setSelectValue' || model.changeChecks[arrayIndices[0]].stepsBeforeCheck[arrayIndices[1]].action === 'setInputValue' || model.changeChecks[arrayIndices[0]].stepsBeforeCheck[arrayIndices[1]].action === 'waitForMilliseconds'; } catch (e) { return false; }"
                                         }
                                     }
                                 }
