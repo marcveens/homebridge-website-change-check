@@ -42,7 +42,7 @@ export const getValueFromPage = async (props: getValueFromPageProps) => {
         const element = await page.$(props.changeCheck.selector);
         const text = await page.evaluate(element => { return element.textContent; }, element);
 
-        foundValue = text;
+        foundValue = text.replace(/(?:\r\n|\r|\n)/g, '').replace(/\s+/g, ' ').trim();
     } catch (e) {
         props.log(e);
 

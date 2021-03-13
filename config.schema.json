@@ -16,18 +16,18 @@
                     "type": "object",
                     "properties": {
                         "name": {
-                            "title": "name",
+                            "title": "Name",
                             "type": "string",
                             "required": true
                         },
                         "url": {
-                            "title": "url",
+                            "title": "Url",
                             "description": "For example: https://www.bbc.com",
                             "type": "string",
                             "required": true
                         },
                         "selector": {
-                            "title": "selector",
+                            "title": "Selector",
                             "description": "For example: \".module--header .module__title\"",
                             "type": "string"
                         },
@@ -37,6 +37,51 @@
                             "type": "number",
                             "default": 300000,
                             "required": false
+                        },
+                        "stepsBeforeCheck": {
+                            "title": "stepsBeforeCheck",
+                            "description": "List of steps that should be executed before checking for the selector. Could be useful if, for example, a value is only visible after filling in a form.",
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "action": {
+                                        "title": "Action",
+                                        "type": "string",
+                                        "default": "setSelectValue",
+                                        "oneOf": [
+                                            {
+                                                "title": "setSelectValue",
+                                                "enum": [
+                                                    "setSelectValue"
+                                                ]
+                                            },
+                                            {
+                                                "title": "setInputValue",
+                                                "enum": [
+                                                    "setInputValue"
+                                                ]
+                                            },
+                                            {
+                                                "title": "waitForMilliseconds",
+                                                "enum": [
+                                                    "waitForMilliseconds"
+                                                ]
+                                            }
+                                        ],
+                                        "required": true
+                                    },
+                                    "selector": {
+                                        "title": "Selector",
+                                        "description": "For example: \".module--header .module__title\"",
+                                        "type": "string"
+                                    },
+                                    "value": {
+                                        "title": "Value",
+                                        "type": "string"
+                                    }
+                                }
+                            }
                         }
                     }
                 }
