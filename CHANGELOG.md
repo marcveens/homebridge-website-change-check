@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Migrated from `puppeteer` to `playwright` due to less code writing and seemingly better stability. 
 - Abstracted some plugin code from Homebridge to make it better testable.   
+- Improved the config.schema.json to make a more intuitive settings UI.
 
 ## [1.0.5] - 2021-03-13
 ### Added
