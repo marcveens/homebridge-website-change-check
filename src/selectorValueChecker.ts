@@ -44,7 +44,7 @@ export const getValueFromPage = async (props: getValueFromPageProps) => {
 
         foundValue = text.replace(/(?:\r\n|\r|\n)/g, '').replace(/\s+/g, ' ').trim();
     } catch (e) {
-        props.log.warn.bind(e.toString());
+        props.log.warn(e.toString());
 
         foundValue = props.previousValue;
     } finally {
