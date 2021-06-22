@@ -94,6 +94,16 @@
                                     }
                                 }
                             }
+                        },
+                        "ignoreValues": {
+                            "title": "Ignore values",
+                            "description": "Add values that should cause no motion trigger",
+                            "type": "array",
+                            "required": false,
+                            "items": {
+                                "type": "string",
+                                "title": "Ignore value"
+                            }
                         }
                     }
                 }

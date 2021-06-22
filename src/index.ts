@@ -120,7 +120,7 @@ class WebsiteChangeCheckPlatform implements DynamicPlatformPlugin {
             browserPath,
             changeCheck,
             log: this.log,
-            verboseLogging: this.config.verbose,
+            verboseLogging: this.config.verbose
             cache: this.cache,
             toggleUpdate: state => {
                 if (state) {
