@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-## [1.0.7] - 2021-06-22
+## [1.0.8] - 2021-06-22
 ### Added
 - Added `ignoreValues` config for ignoring certain check values. For example, if "test123" is the result of a changeCheck, and "test123" is added to the `ignoreValues` list, it won't cause a motion trigger.
 
