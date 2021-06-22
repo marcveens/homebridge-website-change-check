@@ -16,6 +16,7 @@ type HandlerProps = {
 
 export const updateAccessoryStateHandler = async (props: HandlerProps) => {
     const { browserPath, cache, changeCheck, log, verboseLogging, waitForSelectorTimeout, toggleUpdate } = props;
+    const ignoreValues = changeCheck.ignoreValues || [];
 
     const value = await getValueFromPage({
         browserPath,
@@ -29,7 +30,7 @@ export const updateAccessoryStateHandler = async (props: HandlerProps) => {
         props.log(`(${changeCheck.name}) Value found: "${value}". Old value: "${cache.getValue(changeCheck.name)}". Value changed? ${cache.getValue(changeCheck.name) !== value}`);
     }
 
-    if (value && cache.getValue(changeCheck.name) !== value) {
+    if (value && cache.getValue(changeCheck.name) !== value && !ignoreValues.includes(value)) {
         cache.setValue(changeCheck.name, value);
 
         // Only send update if a value changed more than once. This prevents detection from firing on first run. 

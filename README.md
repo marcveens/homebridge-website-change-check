@@ -49,7 +49,8 @@ Example configuration:
                 "name": "BBC check",
                 "url": "http://bbc.com/",
                 "selector": ".module--header .module__title span",
-                "checkInterval": 300000
+                "checkInterval": 300000,
+                "ignoreValues": []
             }
         ]
     }
@@ -62,19 +63,19 @@ Every device stated in the config will be automatically added as an accessory to
 ### Platform Configuration fields
 
 Property | Required? | Remarks
---- | --- | ---
+--- | :-: | ---
 `platform` | :heavy_check_mark: | Should always be **"WebsiteChangeCheck"**.
 `changeChecks` | :heavy_check_mark: | A list of your website checks.
 
 ### changeChecks configuration fields
 Property | Required? | Remarks
---- | --- | ---
+--- | :-: | ---
 `name` | :heavy_check_mark: |Custom name for your check
 `url` | :heavy_check_mark: | URL of the website/page you want to check
 `selector` | :heavy_check_mark: | Selector of the value you want to compare. 
 `checkInterval` | | Interval of the checks
 `stepsBeforeCheck` | | List of steps that should be executed before checking for the selector. Could be useful if, for example, a value is only visible after filling in a form. See [configuration](#stepsbeforecheck-configuration-fields)
-
+`ignoreValues` | | List of change values that do not cause a motion trigger
 ### stepsBeforeCheck configuration options
 Type | Remarks 
 --- | ---

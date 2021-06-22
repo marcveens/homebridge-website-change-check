@@ -6,6 +6,7 @@ export type ChangeCheck = {
     selector: string;
     checkInterval?: number;
     stepsBeforeCheck?: TriggerStep[];
+    ignoreValues?: string[];
 };
 
 export type Options = {
