@@ -16,6 +16,8 @@ The file you can work in is located at `src/__tests__/localDebugger.test.ts`. Ov
 ## Screenshots
 Every time the test runs, screenshots are made of the website you're running the experiment in. This includes a screenshot of the starting state, a screenshot of every `stepsBeforeCheck` step taken, and a screenshot of the final result. 
 
+The screenshots can be found in `src/__tests__/screenshots`.
+
 The screenshots might be very useful for debugging, since the final result might not always be what you expect it to be. You should be aware that some actions (submitting a form, clicking a link, opening a popup) are not instant, and thus require a `waitForMilliseconds` step to be added, just like you see in the default test that was added in the `localDebugger.test.ts` file.
 
 ## FAQ
