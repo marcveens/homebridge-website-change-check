@@ -115,6 +115,8 @@ Type | Remarks
 ```
 In this example the script will wait 500 milliseconds, then set the first possible truthy value in the #mySelectId `select` element, after which it checks the value in `.module--header .module__title span`.
 
+## Local debugging
+See the [LOCAL_DEBUG.md](LOCAL_DEBUG.md) manual for an explanation on how to test your scenario on your local machine. This also includes screenshot so you can visually see what every step of your script does.
 
 ## Contributors
 If you'd like to contribute to this repository, feel free to! 
