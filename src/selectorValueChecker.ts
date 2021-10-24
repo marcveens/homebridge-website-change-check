@@ -11,6 +11,7 @@ type getValueFromPageProps = {
     waitForSelectorTimeout?: number;
     log: Logging;
     verboseLogging?: boolean;
+    debugMode?: boolean;
 };
 
 export const getValueFromPage = async (props: getValueFromPageProps) => {
@@ -27,14 +28,22 @@ export const getValueFromPage = async (props: getValueFromPageProps) => {
         if (process.env.NODE_ENV === 'test') {
             page.setDefaultTimeout(2000);
         }
-        
+
         if (props.verboseLogging) { props.log('Browser initialized'); }
-        
-        await page.goto(props.changeCheck.url, { waitUntil: 'networkidle' });
+
+        await page.goto(props.changeCheck.url, { waitUntil: 'networkidle', timeout: 10000 });
+
+        if (props.debugMode) {
+            await page.screenshot({ path: 'src/__tests__/screenshots/localDebugger-step-start.jpg', fullPage: true });
+        }
 
         // Execute steps before actual check
         if (props.changeCheck.stepsBeforeCheck) {
-            await runStepsBeforeCheck(page, props.changeCheck.stepsBeforeCheck);
+            await runStepsBeforeCheck(page, props.changeCheck.stepsBeforeCheck, props.debugMode);
+        }
+
+        if (props.debugMode) {
+            await page.screenshot({ path: 'src/__tests__/screenshots/localDebugger-step-final.jpg', fullPage: true });
         }
 
         const text = await page.innerText(props.changeCheck.selector, {

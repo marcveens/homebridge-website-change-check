@@ -2,8 +2,11 @@ import { Page } from 'playwright-core';
 import { TriggerStep } from './types/TriggerStep';
 import { asyncTimeout } from './utils/asyncTimeout';
 
-export const runStepsBeforeCheck = async (page: Page, steps: TriggerStep[]) => {
+export const runStepsBeforeCheck = async (page: Page, steps: TriggerStep[], debugMode?: boolean) => {
+    let index = 0;
+
     for (const step of steps) {
+        index++;
         if (step.action === 'setInputValue') {
             await page.fill(step.selector, step.value.toString());
             await page.dispatchEvent(step.selector, 'change');
@@ -22,6 +25,10 @@ export const runStepsBeforeCheck = async (page: Page, steps: TriggerStep[]) => {
 
         } else if (step.action === 'click') {
             await page.click(step.selector);
+        }
+
+        if (debugMode) {
+            await page.screenshot({ path: `src/__tests__/screenshots/localDebugger-step-${index}.jpg`, fullPage: true });
         }
     }
 };
